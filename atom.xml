@@ -1,0 +1,434 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://jrz888.github.io/jrz.github.io/</id>
+    <title>Gridea</title>
+    <updated>2020-12-06T13:17:52.213Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://jrz888.github.io/jrz.github.io/"/>
+    <link rel="self" href="https://jrz888.github.io/jrz.github.io/atom.xml"/>
+    <subtitle>温故而知新</subtitle>
+    <logo>https://jrz888.github.io/jrz.github.io/images/avatar.png</logo>
+    <icon>https://jrz888.github.io/jrz.github.io/favicon.ico</icon>
+    <rights>All rights reserved 2020, Gridea</rights>
+    <entry>
+        <title type="html"><![CDATA[JavaScript数据结构和算法（第一天）]]></title>
+        <id>https://jrz888.github.io/jrz.github.io/post/shu-ju-jie-gou-he-suan-fa/</id>
+        <link href="https://jrz888.github.io/jrz.github.io/post/shu-ju-jie-gou-he-suan-fa/">
+        </link>
+        <updated>2020-12-06T13:11:59.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="一-栈stack后进先出">一、栈（Stack）：后进先出</h2>
+<p><strong>1. 举例：叠碗碟、装电池。</strong></p>
+<blockquote>
+<p>栈常见的操作</p>
+<ul>
+<li>push() 添加一个新元素到栈顶位置。</li>
+<li>pop() 移除栈顶的元素，同时返回被移除的元素。</li>
+<li>peek()   返回栈顶的元素，不对栈做任何修改（该方法不会移除栈顶的元素，仅仅返回它）。</li>
+<li>isEmpty() 如果栈里没有任何元素就返回true，否则返回 false。</li>
+<li>size() 返回栈里的元素个数。这个方法和数组的 length 属性类似。</li>
+<li>toString()  将栈结构的内容以字符串的形式返回。</li>
+</ul>
+</blockquote>
+<p><strong>2. JavaScript 代码实现栈结构</strong></p>
+<pre><code class="language-javascript">&lt;script&gt;
+        // 栈结构的封装
+        class Stack {
+
+            constructor() {   
+                this.items = []; //items是实例stack的私有属性（因为定义在this变量上）
+            }
+
+            // push(item) 压栈操作，往栈里面添加元素
+            push(element) {  
+                //push方法是Stack.prototype属性（因为定义在Stack类上）,是实例的公有属性
+                this.items.push(element);
+            }
+
+
+            // pop() 出栈操作，从栈中取出元素，并返回取出的那个元素
+            pop() {
+                return this.items.pop();
+            }
+
+            // peek() 查看栈顶元素
+            peek() {
+                return this.items[this.items.length - 1];
+            }
+
+            // isEmpty() 判断栈是否为空
+            isEmpty() {
+                return this.items.length === 0;
+            }
+
+            // size() 获取栈中元素个数
+            size() {
+                return this.items.length;
+            }
+
+            // toString() 返回以字符串形式的栈内元素数据
+            toString() {
+                let result = '';
+                for (let item of this.items) {
+                    result += item + ' ';
+                }
+                return result;
+            }
+        }
+
+        let stack = new Stack();
+
+        // push() 测试
+        stack.push(1);
+        stack.push(2);
+        stack.push(3);
+        console.log(stack.items); //--&gt; [1, 2, 3]
+
+        // pop() 测试
+        console.log(stack.pop()); //--&gt; 3
+
+        // peek() 测试
+        console.log(stack.peek()); //--&gt; 2
+
+        // isEmpty() 测试
+        console.log(stack.isEmpty()); //--&gt; false
+
+        // size() 测试
+        console.log(stack.size()); //--&gt; 2
+
+        // toString() 测试
+        console.log(stack.toString()); //--&gt; 1 2
+
+    &lt;/script&gt;
+</code></pre>
+<p><strong>3. 栈结构的简单应用：利用栈结构的特点封装实现十进制转换为二进制的方法。</strong></p>
+<pre><code class="language-javascript">    &lt;script&gt;
+        // 栈结构的封装
+        class Stack {
+
+            constructor() {
+                this.items = [];
+            }
+
+            // push(item) 压栈操作，往栈里面添加元素
+            push(item) {
+                this.items.push(item);
+            }
+
+            // isEmpty() 判断栈是否为空
+            isEmpty() {
+                return this.items.length === 0;
+            }
+
+            // pop() 出栈操作，从栈中取出元素，并返回取出的那个元素
+            pop() {
+                return this.items.pop();
+            }
+        }
+
+        function dec2bin(dec) {
+            // new 一个 Map，保存余数
+            const stack = new Stack();
+
+            // 当不确定循环次数时，使用 while 循环
+            while (dec &gt; 0) {
+                // 除二取余法
+                stack.push(dec % 2); // 获取余数，放入栈中
+                dec = Math.floor(dec / 2); // 除数除以二，向下取整
+            }
+
+            let binaryString = '';
+            // 不断地从栈中取出元素（0 或 1），并拼接到一起。
+            while (!stack.isEmpty()) {
+                binaryString += stack.pop();
+            }
+
+            return binaryString;
+        }
+        // dec2bin() 测试
+        console.log(dec2bin(100)); //--&gt; 1100100
+        console.log(dec2bin(88)); //--&gt; 1011000
+        console.log(dec2bin(1000)); //--&gt; 1111101000
+
+
+        /**
+        扩展：floor() 方法执行的是向下取整计算，它返回的是小于或等于函数参数，并且与之最接近的整数。
+        console.log(Math.floor(0.60));//0
+        console.log(Math.floor(0.40));//0
+        console.log(Math.floor(5.1));//5
+        console.log(Math.floor(-5.1));//-6
+        console.log(Math.floor(-5.9));//-6
+        */
+    &lt;/script&gt;
+</code></pre>
+<h2 id="二-队列queue先进先出">二、队列（Queue）：先进先出</h2>
+<p><strong>1. 举例：排队</strong></p>
+<blockquote>
+<p>队列常见的操作</p>
+<ul>
+<li>enqueue(element) 向队列尾部添加一个（或多个）新的项。</li>
+<li>dequeue() 移除队列的第一（即排在队列最前面的）项，并返回被移除的元素。</li>
+<li>front() 返回队列中的第一个元素——最先被添加，也将是最先被移除的元素。队列不做任何变动（不移除元素，只返回元素信息与 Map 类的 peek方法非常类似）。</li>
+<li>isEmpty() 如果队列中不包含任何元素，返回 true，否则返回 false。</li>
+<li>size() 返回队列包含的元素个数，与数组的 length 属性类似。</li>
+<li>toString() 将队列中的内容，转成字符串形式。</li>
+</ul>
+</blockquote>
+<p><strong>2. JavaScript 代码实现队列结构</strong></p>
+<pre><code class="language-javascript">    &lt;script&gt;
+        class Queue {
+
+            constructor() {
+                this.items = [];
+            }
+
+            // enqueue(item) 入队，将元素加入到队列中
+            enqueue(item) {
+                this.items.push(item);
+            }
+
+            // dequeue() 出队，从队列中删除队头元素，返回删除的那个元素
+            dequeue() {
+                return this.items.shift();
+            }
+
+            // front() 查看队列的队头元素
+            front() {
+                return this.items[0];
+            }
+
+            // isEmpty() 查看队列是否为空
+            isEmpty() {
+                return this.items.length === 0;
+            }
+
+            // size() 查看队列中元素的个数
+            size() {
+                return this.items.length;
+            }
+
+            // toString() 将队列中的元素以字符串形式返回
+            toString() {
+                let result = '';
+                for (let item of this.items) {
+                    result += item + ' ';
+                }
+                return result;
+            }
+        }
+        
+        const queue = new Queue();
+
+        // enqueue() 测试
+        queue.enqueue('a');
+        queue.enqueue('b');
+        queue.enqueue('c');
+        queue.enqueue('d');
+        console.log(queue.items); //--&gt; [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;]
+
+        // dequeue() 测试
+        queue.dequeue();
+        queue.dequeue();
+        console.log(queue.items); //--&gt; [&quot;c&quot;, &quot;d&quot;]
+
+        // front() 测试
+        console.log(queue.front()); //--&gt; c
+
+        // isEmpty() 测试
+        console.log(queue.isEmpty()); //--&gt; false
+
+        // size() 测试
+        console.log(queue.size()); //--&gt; 2
+
+        // toString() 测试
+        console.log(queue.toString()); //--&gt; c d
+    &lt;/script&gt;
+</code></pre>
+<p><strong>3. 队列实现小游戏：击鼓传花。</strong></p>
+<p>分析：传入一组数据集合和设定的数字 number，循环遍历数组内元素，遍历到的元素为指定数字 number 时将该元素删除，直至数组剩下最后一个元素。</p>
+<pre><code class="language-javascript">    &lt;script&gt;
+        class Queue {
+
+            constructor() {
+                this.items = [];
+            }
+
+            // enqueue(item) 入队，将元素加入到队列中
+            enqueue(item) {
+                this.items.push(item);
+            }
+
+            // dequeue() 出队，从队列中删除队头元素，返回删除的那个元素
+            dequeue() {
+                return this.items.shift();
+            }
+
+            // front() 查看队列的队头元素
+            front() {
+                return this.items[0];
+            }
+
+            // size() 查看队列中元素的个数
+            size() {
+                return this.items.length;
+            }
+
+        }
+        
+        // 利用队列结构的特点实现击鼓传花游戏求解方法的封装
+        function passGame(nameList, number) {
+            // 1、new 一个 Queue 对象
+            const queue = new Queue();
+
+            // 2、将 nameList 里面的每一个元素入队
+            for (const name of nameList) {
+                queue.enqueue(name);
+            }
+
+            // 3、开始数数
+            // 队列中只剩下 1 个元素时就停止数数
+            while (queue.size() &gt; 1) {
+                // 不是 number 时，重新加入到队尾
+                // 是 number 时，将其删除
+
+                for (let i = 0; i &lt; number - 1; i++) {
+                    // number 数字之前的人重新放入到队尾（即把队头删除的元素，重新加入到队列中）
+                    queue.enqueue(queue.dequeue());
+                }
+
+                // number 对应这个人，直接从队列中删除
+                // 由于队列没有像数组一样的下标值不能直接取到某一元素，
+                // 所以采用，把 number 前面的 number - 1 个元素先删除后添加到队列末尾，
+                // 这样第 number 个元素就排到了队列的最前面，可以直接使用 dequeue 方法进行删除
+                queue.dequeue();
+            }
+
+            // 4、获取最后剩下的那个人
+            const endName = queue.front();
+
+            // 5、返回这个人在原数组中对应的索引
+            return nameList.indexOf(endName);
+        }
+
+        // passGame() 测试
+        const names = ['lily', 'lucy', 'tom', 'tony', 'jack'];
+        const targetIndex = passGame(names, 4);
+        console.log(names[targetIndex]); //--&gt; lily
+    &lt;/script&gt;
+</code></pre>
+<h2 id="三-优先队列">三、优先队列</h2>
+<p><strong>优先级队列主要考虑的问题：</strong></p>
+<blockquote>
+<ul>
+<li>每个元素不再只是一个数据，还包含优先级。</li>
+<li>在添加元素过程中，根据优先级放入到正确位置。</li>
+</ul>
+</blockquote>
+<pre><code class="language-javascript">    &lt;script&gt;
+        function PriorityQueue() {
+            function QueueElement(element, priority) {
+                this.element = element;
+                this.priority = priority;
+            }
+            this.items = [];
+
+            //实现插入方法
+            PriorityQueue.prototype.enqueue = function (element, priority) {
+                var queueElement = new QueueElement(element, priority);
+                if (this.items.length === 0) {
+                    this.items.push(queueElement);
+                } else {
+                    var added = false;
+                    for (var i = 0; i &lt; this.items.length; i++) {
+                        // 让新插入的元素进行优先级比较，priority 值越小，优先级越大
+                        if (queueElement.priority &lt; this.items[i].priority) {
+                            this.items.splice(i, 0, queueElement); // 在指定的位置插入元素
+                            added = true;
+                            break;
+                        }
+                    }
+
+
+                    // 如果遍历完所有元素，优先级都大于新插入的元素，就将新插入的元素插入到最后
+                    if (!added) {
+                        this.items.push(queueElement)
+                    }
+                }
+            }
+            PriorityQueue.prototype.dequeue = function () {
+                return this.items.shift();
+            }
+            PriorityQueue.prototype.front = function () {
+                return this.items[0];
+            }
+            PriorityQueue.prototype.isEmpty = function () {
+                return this.items.length === 0;
+            }
+            PriorityQueue.prototype.size = function () {
+                return this.items.length;
+            }
+            PriorityQueue.prototype.toString = function () {
+                var resultString = '';
+                for (var i = 0; i &lt; this.items.length; i++) {
+                    resultString += this.items[i].element + '-' + this.items[i].priority + ' '
+                }
+                return resultString;
+            }
+        }
+
+        var p = new PriorityQueue();
+
+        p.enqueue('abc', 111);
+        p.enqueue('cbc', 200);
+        p.enqueue('nbc', 55);
+        p.enqueue('nbc', 60);
+        alert(p); // --&gt; nbc-55 nbc-60 abc-111 cbc-200 
+
+        // dequeue() 测试
+        p.dequeue();
+        console.log(p.items); // --&gt; nbc-60 abc-111 cbc-200 
+
+        // isEmpty() 测试
+        console.log(p.isEmpty()); //--&gt; false
+
+        // size() 测试
+        console.log(p.size()); //--&gt; 3
+
+        // toString() 测试
+        console.log(p.toString()); //--&gt; nbc-60 abc-111 cbc-200 
+    &lt;/script&gt;
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Hello Gridea]]></title>
+        <id>https://jrz888.github.io/jrz.github.io/post/hello-gridea/</id>
+        <link href="https://jrz888.github.io/jrz.github.io/post/hello-gridea/">
+        </link>
+        <updated>2018-12-11T16:00:00.000Z</updated>
+        <summary type="html"><![CDATA[<p>👏  欢迎使用 <strong>Gridea</strong> ！<br>
+✍️  <strong>Gridea</strong> 一个静态博客写作客户端。你可以用它来记录你的生活、心情、知识、笔记、创意... ...</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>👏  欢迎使用 <strong>Gridea</strong> ！<br>
+✍️  <strong>Gridea</strong> 一个静态博客写作客户端。你可以用它来记录你的生活、心情、知识、笔记、创意... ...</p>
+<!-- more -->
+<p><a href="https://github.com/getgridea/gridea">Github</a><br>
+<a href="https://gridea.dev/">Gridea 主页</a><br>
+<a href="http://fehey.com/">示例网站</a></p>
+<h2 id="特性">特性👇</h2>
+<p>📝  你可以使用最酷的 <strong>Markdown</strong> 语法，进行快速创作</p>
+<p>🌉  你可以给文章配上精美的封面图和在文章任意位置插入图片</p>
+<p>🏷️  你可以对文章进行标签分组</p>
+<p>📋  你可以自定义菜单，甚至可以创建外部链接菜单</p>
+<p>💻  你可以在 <strong>Windows</strong>，<strong>MacOS</strong> 或 <strong>Linux</strong> 设备上使用此客户端</p>
+<p>🌎  你可以使用 <strong>𝖦𝗂𝗍𝗁𝗎𝖻 𝖯𝖺𝗀𝖾𝗌</strong> 或 <strong>Coding Pages</strong> 向世界展示，未来将支持更多平台</p>
+<p>💬  你可以进行简单的配置，接入 <a href="https://github.com/gitalk/gitalk">Gitalk</a> 或 <a href="https://github.com/SukkaW/DisqusJS">DisqusJS</a> 评论系统</p>
+<p>🇬🇧  你可以使用<strong>中文简体</strong>或<strong>英语</strong></p>
+<p>🌁  你可以任意使用应用内默认主题或任意第三方主题，强大的主题自定义能力</p>
+<p>🖥  你可以自定义源文件夹，利用 OneDrive、百度网盘、iCloud、Dropbox 等进行多设备同步</p>
+<p>🌱 当然 <strong>Gridea</strong> 还很年轻，有很多不足，但请相信，它会不停向前 🏃</p>
+<p>未来，它一定会成为你离不开的伙伴</p>
+<p>尽情发挥你的才华吧！</p>
+<p>😘 Enjoy~</p>
+]]></content>
+    </entry>
+</feed>
